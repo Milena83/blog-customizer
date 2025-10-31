@@ -4,6 +4,7 @@ import { Text } from 'src/ui/text';
 import { Select } from 'src/ui/select';
 import { RadioGroup } from 'src/ui/radio-group';
 import { Separator } from 'src/ui/separator';
+import clsx from 'clsx';
 
 import styles from './ArticleParamsForm.module.scss';
 import { useRef, useState, useEffect  } from 'react';
@@ -15,26 +16,26 @@ type ArticleParamsFormProps = {
 };
 
 export const ArticleParamsForm = ({currentArticleState, setCurrentArticleState}: ArticleParamsFormProps) => {
-	const [isOpen, setIsOpen] = useState(false);
+	const [isFormOpen, setIsFormOpen] = useState(false);
 	const asideRef = useRef<HTMLDivElement | null>(null);
 	const [choosenArticleParams, setChoosenArticleParams] = useState<ArticleStateType>(currentArticleState)
 
 	useEffect(() => {
 		function handleClickOutside(event: MouseEvent) {
 		  if (asideRef.current && !asideRef.current.contains(event.target as Node)) {
-			setIsOpen(false);
+			setIsFormOpen(false);
 		  }
 		}
-		if (isOpen) {
+		if (isFormOpen) {
 		  document.addEventListener('mousedown', handleClickOutside);
 		}
 		return () => {
 		  document.removeEventListener('mousedown', handleClickOutside);
 		};
-	  }, [isOpen]);
+	  }, [isFormOpen]);
 
     function handleOpen() {
-      setIsOpen((prev) => !prev);
+		setIsFormOpen((prev) => !prev);
     }
 
 	function handleChange(key: keyof ArticleStateType, value: OptionType) {
@@ -56,8 +57,8 @@ export const ArticleParamsForm = ({currentArticleState, setCurrentArticleState}:
 
 	return (
 		<>
-			<ArrowButton isOpen={isOpen} onClick={handleOpen} />
-			<aside ref={asideRef} className={`${styles.container} ${isOpen ? styles.container_open : ''}`}>
+			<ArrowButton isOpen={isFormOpen} onClick={handleOpen} />
+			<aside ref={asideRef} className={clsx(styles.container, isFormOpen && styles.container_open)}>
 				<form className={styles.form} onReset={handleReset} onSubmit={handleSubmit}>
 
 				    <Text size={31} uppercase={true} weight={800}>
